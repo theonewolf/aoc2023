@@ -12,6 +12,8 @@ foreach (string row in System.IO.File.ReadLines(@"./input")) {
     string data = "";
 
     int col_index = 0;
+
+    // This isn't as elegant as I imagined, due to handling the end of the grid boundary on the right.
     // For each col in row
     foreach (var col in row) {
         switch (col) {
@@ -48,6 +50,14 @@ foreach (string row in System.IO.File.ReadLines(@"./input")) {
         }
 
         col_index++;
+    }
+
+    // Numbers at the edge of the grid.
+    if (data != "") {
+        gridNumbers.Add(new GridNumber(x, y, data.Length, data, int.Parse(data)));
+        x = -1;
+        y = -1;
+        data = "";
     }
 
     row_index++;

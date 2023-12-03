@@ -20,7 +20,7 @@ public class GridNumber
             col < Col + Width &&
             row == Row;
     }
-
+    
     public override bool Equals(object obj)
     {
         if (obj is GridNumber other)
