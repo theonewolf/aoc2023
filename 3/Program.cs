@@ -65,49 +65,73 @@ foreach (string row in System.IO.File.ReadLines(@"./input")) {
 
 // Check for all symbols touching GridNumbers
 HashSet<GridNumber> symbolsTouched = new();
+HashSet<Symbol> gears = new();
 
 foreach (var symbol in symbols) {
     foreach (var number in gridNumbers) {
+        bool touched = false;
         // North
         if (number.Contains(symbol.Row, symbol.Col - 1)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // North-East
         if (number.Contains(symbol.Row + 1, symbol.Col - 1)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // East
         if (number.Contains(symbol.Row + 1, symbol.Col)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // South-East
         if (number.Contains(symbol.Row + 1, symbol.Col + 1)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // South
         if (number.Contains(symbol.Row, symbol.Col + 1)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // South-West
         if (number.Contains(symbol.Row - 1, symbol.Col + 1)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // West
         if (number.Contains(symbol.Row - 1, symbol.Col)) {
             symbolsTouched.Add(number);
+            touched = true;
         }
 
         // North-West
         if (number.Contains(symbol.Row - 1, symbol.Col - 1)) {
             symbolsTouched.Add(number);
+            touched = true;
+        }
+
+        //Part 2
+        if (touched) {
+            if (symbol.Data == "*") {
+                symbol.AdjacentParts.Add(number.Value);
+                if (symbol.AdjacentParts.Count >= 2) {
+                    gears.Add(symbol);
+                }
+            }
         }
     }
 }
 
+// Part 1
 Console.WriteLine(symbolsTouched.Select(x => x.Value).Sum());
+
+// Part 2
+Console.WriteLine(gears.Select(x => x.AdjacentParts.Aggregate((a, b) => a * b)).Sum());

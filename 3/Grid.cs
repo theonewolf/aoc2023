@@ -20,7 +20,7 @@ public class GridNumber
             col < Col + Width &&
             row == Row;
     }
-    
+
     public override bool Equals(object obj)
     {
         if (obj is GridNumber other)
@@ -38,28 +38,31 @@ public class GridNumber
 
 public class Symbol
 {
-   public int Col { get; private set; }
-   public int Row { get; private set; }
-   public string Data { get; private set; }
+  public int Col { get; private set; }
+  public int Row { get; private set; }
+  public string Data { get; private set; }
+  public List<long> AdjacentParts { get; set; }
 
-   public Symbol(int col, int row, string data)
-   {
-       Col = col;
-       Row = row;
-       Data = data;
-   }
 
-   public override bool Equals(object obj)
-   {
-       if (obj is Symbol other)
-       {
-           return Col == other.Col && Row == other.Row && Data == other.Data;
-       }
-       return false;
-   }
+  public Symbol(int col, int row, string data)
+  {
+      Col = col;
+      Row = row;
+      Data = data;
+      AdjacentParts = new();
+  }
 
-   public override int GetHashCode()
-   {
-       return HashCode.Combine(Col, Row, Data);
-   }
+  public override bool Equals(object obj)
+  {
+      if (obj is Symbol other)
+      {
+          return Col == other.Col && Row == other.Row && Data == other.Data;
+      }
+      return false;
+  }
+
+  public override int GetHashCode()
+  {
+      return HashCode.Combine(Col, Row, Data);
+  }
 }
