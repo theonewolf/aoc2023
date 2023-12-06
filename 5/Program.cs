@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Day5;
 
 // Part 1
@@ -101,6 +102,7 @@ foreach (string line in File.ReadLines(@"./input")) {
 
 Console.WriteLine($"seeds2 Count: {seeds2.Count}");
 
+/*
 Console.WriteLine(seeds2?
                                                     .Select(x => seedToSoil.Map(x))
                                                     .Select(x => soilToFertilizer.Map(x))
@@ -109,3 +111,21 @@ Console.WriteLine(seeds2?
                                                     .Select(x => lightToTemperature.Map(x))
                                                     .Select(x => temperatureToHumidity.Map(x))
                                                     .Select(x => humidityToLocation.Map(x)).Min());
+                                                    */
+
+var results = new ConcurrentBag<long>();
+
+Parallel.ForEach(seeds2, seed =>
+{
+   var result = seedToSoil.Map(seed);
+   result = soilToFertilizer.Map(result);
+   result = fertilizerToWater.Map(result);
+   result = waterToLight.Map(result);
+   result = lightToTemperature.Map(result);
+   result = temperatureToHumidity.Map(result);
+   result = humidityToLocation.Map(result);
+
+   results.Add(result);
+});
+
+Console.WriteLine(results.Min());
