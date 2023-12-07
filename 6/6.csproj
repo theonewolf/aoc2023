@@ -6,6 +6,7 @@
     <RootNamespace>_6</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <_EnableMacOSCodeSign>false</_EnableMacOSCodeSign>
   </PropertyGroup>
 
 </Project>
