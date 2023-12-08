@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Globalization;
 
 namespace day7 {
 
@@ -8,7 +9,9 @@ public class Hand : IComparable<Hand> {
   private long score;
   private HandType? handType;
 
-    public static Dictionary<char, int> cardMap = new(){
+        public bool part2 { get; private set; }
+
+        public static Dictionary<char, int> cardMap = new(){
         {'A', 12},
         {'K', 11},
         {'Q' , 10},
@@ -24,11 +27,30 @@ public class Hand : IComparable<Hand> {
         {'2' , 0},        
     };
 
+        public static Dictionary<char, int> cardMap2 = new(){
+        {'A', 12},
+        {'K', 11},
+        {'Q' , 10},
+        {'T' , 9},
+        {'9' , 8},
+        {'8' , 7},
+        {'7' , 6},
+        {'6' , 5},
+        {'5' , 4},
+        {'4' , 3},
+        {'3' , 2},
+        {'2' , 1}, 
+        {'J' , 0}
+    };
+
   // Constructor
-  public Hand(String hand, long score) {
+  public Hand(String hand, long score, bool part2 = false) {
       this.hand = hand;
       this.score = score;
       this.handType = null;
+      this.part2 = part2;
+
+    if (part2) cardMap = cardMap2;
 
         Dictionary<char, int> counts = new Dictionary<char, int>();
 
@@ -45,6 +67,8 @@ public class Hand : IComparable<Hand> {
         }
 
         bool onePair = false;
+
+        if (!part2) {
         foreach (var value in counts.Values) {
             if (value == 5) {
                 this.handType = HandType.FIVE_OF_A_KIND;
@@ -55,13 +79,13 @@ public class Hand : IComparable<Hand> {
                 this.handType = HandType.FOUR_OF_A_KIND;
                 break;
             }
-            
-            if (value == 3 && counts.Keys.Count == 2) {
-                this.handType = HandType.FULL_HOUSE;
-                break;
-            } 
 
             if (value == 3) {
+                if (counts.Keys.Count == 2) {
+                    this.handType = HandType.FULL_HOUSE;
+                    break;
+                } 
+
                 this.handType = HandType.THREE_OF_A_KIND;
                 break;
             }
@@ -73,6 +97,66 @@ public class Hand : IComparable<Hand> {
 
             if (value == 2) {
                 onePair = true;
+            }
+        }
+        } else {
+            bool jUsed = false;
+            foreach (KeyValuePair<char, int> entry in counts) {
+                int j = 0;
+                if (entry.Key != 'J') {
+                    j = counts.GetValueOrDefault('J');
+                }
+
+                if (entry.Value == 5 || (entry.Value + j == 5)) {
+                    if (this.handType == null || this.handType < HandType.FIVE_OF_A_KIND) {
+                        this.handType = HandType.FIVE_OF_A_KIND;
+                    }
+                }
+    
+                if (entry.Value == 4 || (entry.Value + j == 4)) {
+                    if (this.handType == null || this.handType < HandType.FOUR_OF_A_KIND) {
+                        this.handType = HandType.FOUR_OF_A_KIND;
+                    }
+                }
+
+                if (entry.Value == 3 || (entry.Value + j == 3)) {
+                    if (counts.Keys.Count == 2) {
+                        if (this.handType == null || this.handType < HandType.FULL_HOUSE) {
+                            this.handType = HandType.FULL_HOUSE;
+                        }
+                    } 
+
+                    if ((entry.Value + j)== 3 && counts.Keys.Count == 3) {
+                        if (this.handType == null || this.handType < HandType.FULL_HOUSE) {
+                            this.handType = HandType.FULL_HOUSE;
+                        }
+                    }
+
+                        if (this.handType == null || this.handType < HandType.THREE_OF_A_KIND) {
+                            this.handType = HandType.THREE_OF_A_KIND;
+                        }
+                }
+
+                if (((!jUsed && entry.Value + j == 2) || (entry.Value == 2)) && onePair) {
+                        if (this.handType == null || this.handType < HandType.TWO_PAIR) {
+                            this.handType = HandType.TWO_PAIR;
+                        }
+                }
+
+                if (entry.Value == 2) {
+                        if (this.handType == null || this.handType < HandType.ONE_PAIR) {
+                            this.handType = HandType.ONE_PAIR;
+                        }
+                        onePair = true;
+                }
+
+                if (!jUsed && (entry.Value + j == 2)) {
+                        if (this.handType == null || this.handType < HandType.ONE_PAIR) {
+                            this.handType = HandType.ONE_PAIR;
+                        }
+                        onePair = true;
+                        jUsed = true;
+                }
             }
         }
 
