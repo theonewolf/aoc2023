@@ -137,26 +137,14 @@ public class Hand : IComparable<Hand> {
                         }
                 }
 
-                if (((!jUsed && entry.Value + j == 2) || (entry.Value == 2)) && onePair) {
-                        if (this.handType == null || this.handType < HandType.TWO_PAIR) {
-                            this.handType = HandType.TWO_PAIR;
-                        }
-                }
+            if (entry.Value == 2 && onePair) {
+                this.handType = HandType.TWO_PAIR;
+                break;
+            }
 
-                if (entry.Value == 2) {
-                        if (this.handType == null || this.handType < HandType.ONE_PAIR) {
-                            this.handType = HandType.ONE_PAIR;
-                        }
-                        onePair = true;
-                }
-
-                if (!jUsed && (entry.Value + j == 2)) {
-                        if (this.handType == null || this.handType < HandType.ONE_PAIR) {
-                            this.handType = HandType.ONE_PAIR;
-                        }
-                        onePair = true;
-                        jUsed = true;
-                }
+            if (entry.Value == 2) {
+                onePair = true;
+            }
             }
         }
 
