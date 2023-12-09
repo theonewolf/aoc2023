@@ -1,6 +1,7 @@
 using day8;
 
-Tree<string> root = new();
+// Part 1
+
 Dictionary<string, Node<string>> cache = [];
 
 string[] lines = System.IO.File.ReadAllLines(@"./input");
